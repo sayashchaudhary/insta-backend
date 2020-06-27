@@ -8,6 +8,7 @@ router.post('/createpost', authenticated, (req, res) => {
     if (!title || !body) {
         return res.status(442).json({ error: 'Please fill all the fields' })
     }
+    req.user.password = undefined
     const post = new Post({
         title,
         body,
