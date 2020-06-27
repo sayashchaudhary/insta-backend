@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../../config/keys');
-const mongoose = require('mongoose');
-const User = mongoose.model('User')
+const User = require('../models/user')
 
 module.exports = (req, res, next) => {
     const { authorization } = req.headers;
@@ -15,8 +14,8 @@ module.exports = (req, res, next) => {
         }
         const { _id } = payload;
         User.findById(_id).then(userData => {
-            req.user = userData
+            req.user = userData;
+            next()
         })
     })
-    next()
 }

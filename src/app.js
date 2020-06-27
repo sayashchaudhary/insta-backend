@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const { MONGO_URI } = require('../config/keys');
-require('./models/user');
 
 //My routes
-const authRoutes = require('./routes/auth')
+const authRoutes = require('./routes/auth');
+const postRoutes = require('./routes/post');
 
 mongoose.connect(MONGO_URI, {
     useUnifiedTopology: true,
@@ -15,8 +15,9 @@ mongoose.connect(MONGO_URI, {
 });
 
 //My routes
-app.use(express.json())
+app.use(express.json());
 app.use(authRoutes);
+app.use(postRoutes);
 
 const Port = 3000;
 
