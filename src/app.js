@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
 const { MONGO_URI } = require('../config/keys');
@@ -16,10 +17,11 @@ mongoose.connect(MONGO_URI, {
 
 //My routes
 app.use(express.json());
+app.use(cors());
 app.use(authRoutes);
 app.use(postRoutes);
 
-const Port = 3000;
+const Port = 8000;
 
 app.listen(Port, () => {
     console.log(`Server is running on ${Port}`)
