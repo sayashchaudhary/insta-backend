@@ -4,14 +4,15 @@ const authenticated = require('../middleware/auth')
 const Post = require('../models/post')
 
 router.post('/createpost', authenticated, (req, res) => {
-    const { title, body } = req.body;
-    if (!title || !body) {
+    const { title, body, photo } = req.body;
+    if (!title || !body || !photo) {
         return res.status(442).json({ error: 'Please fill all the fields' })
     }
     req.user.password = undefined
     const post = new Post({
         title,
         body,
+        photo,
         postedBy: req.user
     })
     post.save().then((result) => {
