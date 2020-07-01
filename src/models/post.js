@@ -14,6 +14,13 @@ const postSchema = new mongoose.Schema({
         type: ObjectID,
         ref: 'User'
     }],
+    comments: [{
+        type: String,
+        postedBy: {
+            type: ObjectID,
+            ref: 'User'
+        }
+    }],
     photo: {
         type: String,
         required: true
