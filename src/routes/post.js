@@ -39,6 +39,34 @@ router.get('/profile', authenticated, (req, res) => {
         }).catch((err) => {
         console.log(err)
     })
+});
+
+router.put('/like', authenticated, (req, res) => {
+    Post.findByIdAndUpdate(req.body.postId, {
+        $push: { likes: req.user._id }
+    }, {
+        new: true
+    }).exec((err, result) => {
+        if (err) {
+            return res.status(422).json({ error: err })
+        } else {
+            res.json(result)
+        }
+    })
+});
+
+router.put('/unlike', authenticated, (req, res) => {
+    Post.findByIdAndUpdate(req.body.postId, {
+        $pull: { likes: req.user._id }
+    }, {
+        new: true
+    }).exec((err, result) => {
+        if (err) {
+            return res.status(422).json({ error: err })
+        } else {
+            res.json(result)
+        }
+    })
 })
 
 module.exports = router
