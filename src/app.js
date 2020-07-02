@@ -7,6 +7,7 @@ const { MONGO_URI } = require('../config/keys');
 //My routes
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/post');
+const userRoutes = require('./routes/user');
 
 mongoose.connect(MONGO_URI, {
     useUnifiedTopology: true,
@@ -15,11 +16,14 @@ mongoose.connect(MONGO_URI, {
     console.log('DB connected')
 });
 
-//My routes
+//Middleware
 app.use(express.json());
 app.use(cors());
+
+//My routes
 app.use(authRoutes);
 app.use(postRoutes);
+app.use(userRoutes);
 
 const Port = 8000;
 

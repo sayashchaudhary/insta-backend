@@ -50,12 +50,12 @@ router.put('/like', authenticated, (req, res) => {
         new: true
     }).populate('postedBy', '_id name')
         .exec((err, result) => {
-        if (err) {
-            return res.status(422).json({ error: err })
-        } else {
-            res.json(result)
-        }
-    })
+            if (err) {
+                return res.status(422).json({ error: err })
+            } else {
+                res.json(result)
+            }
+        })
 });
 
 router.put('/unlike', authenticated, (req, res) => {
@@ -65,12 +65,12 @@ router.put('/unlike', authenticated, (req, res) => {
         new: true
     }).populate('postedBy', '_id name')
         .exec((err, result) => {
-        if (err) {
-            return res.status(422).json({ error: err })
-        } else {
-            res.json(result)
-        }
-    })
+            if (err) {
+                return res.status(422).json({ error: err })
+            } else {
+                res.json(result)
+            }
+        })
 });
 
 router.put('/comment', authenticated, (req, res) => {
@@ -96,5 +96,23 @@ router.put('/comment', authenticated, (req, res) => {
             }
         })
 });
+
+router.delete('/deletepost/:postId', authenticated, (req, res) => {
+    Post.findOne({ _id: req.params.postId })
+        .populate('postedBy', '_id')
+        .exec((err, post) => {
+            if (err || !post) {
+                res.status(404).json({ error: err })
+            }
+            if (post.postedBy._id.toString() === req.user._id.toString()) {
+                post.remove()
+                    .then((result) => {
+                        res.json(result)
+                    }).catch((err) => {
+                    console.log(err)
+                })
+            }
+        })
+})
 
 module.exports = router
