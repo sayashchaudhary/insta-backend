@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authenticated = require('../middleware/auth')
 const Post = require('../models/post')
+const User = require('../models/user')
 
 router.post('/createpost', authenticated, (req, res) => {
     const { title, body, photo } = req.body;
@@ -34,14 +35,15 @@ router.get('/allposts', authenticated, (req, res) => {
 })
 
 router.get('/profile', authenticated, (req, res) => {
-    Post.find({ postedBy: req.user._id })
-        .populate('postedBy', '_id name')
-        .then((posts) => {
-            res.json({ posts })
-        }).catch((err) => {
-        console.log(err)
-    })
-});
+    User.findById({ _id: req.user._id }).select('-password')
+        .then((user) => {
+            Post.find({ postedBy: req.user._id })
+                .populate('postedBy', '_id name')
+                .then((posts) => {
+                    return res.json({ user, posts })
+                })
+        })
+})
 
 router.put('/like', authenticated, (req, res) => {
     Post.findByIdAndUpdate(req.body.postId, {

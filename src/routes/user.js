@@ -28,14 +28,56 @@ router.get('/user/:id', authenticated, (req, res) => {
     })
 })
 
-// router.get('/user/:id', (req, res) => {
-//     User.findById({ _id: req.params.id })
-//         .then((user) => {
-//             console.log(user)
-//             res.json({ user })
-//         }).catch((err) => {
-//         console.log(err)
-//     })
-// })
+router.put('/follow', authenticated, (req, res) => {
+    User.findByIdAndUpdate(req.body.followId, {
+            $push: {
+                followers: req.user._id
+            }
+        }, {
+            new: true
+        }
+    ).then((result, err) => {
+        if (!err) {
+            User.findByIdAndUpdate(req.user._id, {
+                $push: {
+                    following: req.body.followId
+                }
+            }, {
+                new: true
+            }).then((res) => {
+                res.json(res)
+            })
+        }
+        return res.json(result)
+    }).catch((error) => {
+        return res.status(422).json({ error })
+    })
+});
+
+router.put('/unfollow', authenticated, (req, res) => {
+    User.findByIdAndUpdate(req.body.unFollowId, {
+            $pull: {
+                followers: req.user._id
+            }
+        }, {
+            new: true
+        }
+    ).then((result, err) => {
+        if (!err) {
+            User.findByIdAndUpdate(req.user._id, {
+                $pull: {
+                    following: req.body.unFollowId
+                }
+            }, {
+                new: true
+            }).then((res) => {
+                res.json(res)
+            })
+        }
+        return res.json(result)
+    }).catch((error) => {
+        return res.status(422).json({ error })
+    })
+});
 
 module.exports = router;
