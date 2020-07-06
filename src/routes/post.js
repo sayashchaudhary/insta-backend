@@ -34,6 +34,17 @@ router.get('/allposts', authenticated, (req, res) => {
     })
 })
 
+router.get('/following/posts', authenticated, (req, res) => {
+    Post.find({ postedBy: { $in: req.user.following } })
+        .populate('postedBy', '_id name')
+        .populate('comments.postedBy', '_id name')
+        .then((posts) => {
+            res.json({ posts })
+        }).catch((err) => {
+        console.log(err)
+    })
+})
+
 router.get('/profile', authenticated, (req, res) => {
     User.findById({ _id: req.user._id }).select('-password')
         .then((user) => {
